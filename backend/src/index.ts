@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -30,6 +31,6 @@ pool.connect()
       console.log(`Server is running on http://localhost:${port}`);
     });
   })
-  .catch(err => {
+  .catch((err: Error) => {
     console.error('Database connection error', err.stack);
   });
