@@ -1,3 +1,6 @@
+// FIX: Add a triple-slash directive to include Vite's client types to resolve issues with `import.meta.env`.
+/// <reference types="vite/client" />
+
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';

@@ -1,9 +1,9 @@
 import React from 'react';
 
 interface IconProps {
-  // FIX: The type for 'icon' was too broad (React.ReactNode).
-  // Changed to React.ReactElement to ensure a valid element is passed for cloning.
-  icon: React.ReactElement;
+  // FIX: Changed icon type to `React.ReactElement<any>` to resolve the overload error.
+  // The previous `React.ReactElement` type was not specific enough for TypeScript to allow passing the `size` prop.
+  icon: React.ReactElement<any>;
   label: string;
   onDoubleClick: () => void;
 }

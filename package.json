@@ -1,36 +1,13 @@
 {
-  "name": "ai-workstation-backend",
+  "name": "ai-workstation-monorepo-root",
+  "version": "1.0.0",
+  "description": "Root package for AI Workstation monorepo to orchestrate build and start scripts for Render.",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "npm install --prefix backend && npm run build --prefix backend",
+    "start": "npm start --prefix backend"
   },
-  "dependencies": {
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "axios": "^1.11.0",
-    "dotenv": "^17.2.1",
-    "react": "^18.2.0",
-    "cors": "^2.8.5",
-    "vite": "^7.1.3",
-    "@vitejs/plugin-react": "^5.0.1",
-    "@google/genai": "^1.15.0",
-    "react-router-dom": "^7.8.2",
-    "lucide-react": "^0.542.0",
-    "react-dom": "^18.2.0",
-    "uuid": "^11.1.0",
-    "bcrypt": "^6.0.0",
-    "react-resizable": "^3.0.5",
-    "react-draggable": "^4.5.0",
-    "react-quill": "^2.0.0",
-    "pg": "^8.16.3"
-  },
-  "devDependencies": {
-    "@types/node": "^22.14.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
