@@ -1,11 +1,13 @@
-import { Request, Response } from 'express';
+// FIX: Import the entire 'express' module to use express.Request and express.Response,
+// which resolves type conflicts and errors about missing properties like 'body' and 'status'.
+import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../db';
 
 const SALT_ROUNDS = 10;
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: express.Request, res: express.Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -29,7 +31,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: express.Request, res: express.Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

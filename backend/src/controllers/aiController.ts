@@ -1,4 +1,6 @@
-import { Response } from 'express';
+// FIX: Import the entire 'express' module and use express.Response to resolve
+// type errors related to missing properties on the Response object.
+import express from 'express';
 import { GoogleGenAI } from "@google/genai";
 import { AuthRequest } from '../middleware/auth';
 
@@ -10,7 +12,7 @@ if (!process.env.API_KEY) {
 // FIX: Use API_KEY as per Google GenAI SDK guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const chatWithAI = async (req: AuthRequest, res: Response) => {
+export const chatWithAI = async (req: AuthRequest, res: express.Response) => {
   const { history, message } = req.body;
 
   if (!message) {
@@ -34,7 +36,7 @@ export const chatWithAI = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const generateImage = async (req: AuthRequest, res: Response) => {
+export const generateImage = async (req: AuthRequest, res: express.Response) => {
     const { prompt } = req.body;
 
     if (!prompt) {
@@ -52,8 +54,11 @@ export const generateImage = async (req: AuthRequest, res: Response) => {
             },
         });
 
-        if (response.generatedImages && response.generatedImages.length > 0) {
-            const base64Image = response.generatedImages[0].image.imageBytes;
+        // FIX: Safely access the image data using optional chaining to prevent a runtime error
+        // if the API response does not include an image, resolving the TS2532 error.
+        const base64Image = response.generatedImages?.[0]?.image?.imageBytes;
+
+        if (base64Image) {
             res.json({ image: base64Image });
         } else {
             res.status(500).json({ message: 'Image generation failed' });

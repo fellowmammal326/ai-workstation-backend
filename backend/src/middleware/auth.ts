@@ -1,14 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import jwt from 'jsonwebtoken';
 
-// FIX: Changed interface to a type intersection to resolve property existence errors in controllers.
-// The original `interface AuthRequest extends Request` was not correctly inheriting properties
-// like `body`, `params`, and `headers` in the project's TypeScript environment.
-export type AuthRequest = Request & {
+// FIX: Correctly extend express.Request using an interface to avoid type conflicts with
+// global types and ensure properties like `headers`, `body`, and `params` are available.
+export interface AuthRequest extends express.Request {
   user?: { id: number };
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: AuthRequest, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
