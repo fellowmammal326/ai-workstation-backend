@@ -1,5 +1,12 @@
-// FIX: Add a triple-slash directive to include Vite's client types to resolve issues with `import.meta.env`.
-/// <reference types="vite/client" />
+// FIX: Manually define types for import.meta.env to resolve TypeScript errors,
+// as the /// <reference types="vite/client" /> directive was failing.
+declare global {
+  interface ImportMeta {
+    readonly env: {
+      readonly VITE_API_URL?: string;
+    };
+  }
+}
 
 import axios from 'axios';
 

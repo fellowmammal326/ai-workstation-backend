@@ -3,11 +3,11 @@
   "name": "workstation-server",
   "version": "1.0.0",
   "description": "Backend server for the AI Workstation application.",
-  "main": "dist/server.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts"
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",

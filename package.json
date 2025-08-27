@@ -4,7 +4,7 @@
   "description": "Root package for AI Workstation monorepo to orchestrate build and start scripts for Render.",
   "private": true,
   "scripts": {
-    "build": "npm install --prefix backend && npm run build --prefix backend",
+    "postinstall": "npm install --prefix backend && npm run build --prefix backend",
     "start": "npm start --prefix backend"
   },
   "engines": {
