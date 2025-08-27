@@ -1,5 +1,5 @@
-// FIX: Add a triple-slash directive to include Vite's client types,
-// which resolves the error on `import.meta.env`.
+// FIX: Added a triple-slash directive to include Vite's client types.
+// This resolves errors about `import.meta.env` missing type definitions.
 /// <reference types="vite/client" />
 
 import axios from 'axios';

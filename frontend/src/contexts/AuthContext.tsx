@@ -12,8 +12,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// FIX: Changed props definition to use a defined interface to resolve a typing issue.
-// This helps TypeScript correctly infer the component's props and resolves the "children is missing" error in main.tsx.
+// FIX: Explicitly defined props for AuthProvider, including `children`, to fix the type error in main.tsx.
 interface AuthProviderProps {
   children: ReactNode;
 }
