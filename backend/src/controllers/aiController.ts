@@ -1,6 +1,6 @@
-// FIX: Import the entire 'express' module and use express.Response to resolve
-// type errors related to missing properties on the Response object.
-import express from 'express';
+
+// FIX: Use a named import for the Response type to resolve type errors.
+import { Response } from 'express';
 import { GoogleGenAI } from "@google/genai";
 import { AuthRequest } from '../middleware/auth';
 
@@ -12,7 +12,7 @@ if (!process.env.API_KEY) {
 // FIX: Use API_KEY as per Google GenAI SDK guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const chatWithAI = async (req: AuthRequest, res: express.Response) => {
+export const chatWithAI = async (req: AuthRequest, res: Response) => {
   const { history, message } = req.body;
 
   if (!message) {
@@ -36,7 +36,7 @@ export const chatWithAI = async (req: AuthRequest, res: express.Response) => {
   }
 };
 
-export const generateImage = async (req: AuthRequest, res: express.Response) => {
+export const generateImage = async (req: AuthRequest, res: Response) => {
     const { prompt } = req.body;
 
     if (!prompt) {
