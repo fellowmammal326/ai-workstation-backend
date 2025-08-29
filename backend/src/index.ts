@@ -1,5 +1,6 @@
 
 
+
 import dotenv from 'dotenv';
 // By calling dotenv.config() here, at the very top of the application's entry point,
 // we ensure that all environment variables are loaded from the .env file (for local development)
@@ -7,7 +8,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // FIX: Switched to importing the 'express' namespace to avoid type conflicts with global Request/Response.
-import express from 'express';
+// FIX: Switched to direct type imports from 'express' for better type resolution.
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import fileRoutes from './routes/files';
@@ -37,9 +39,15 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 
 // FIX: Using namespaced express types to avoid type conflicts.
-app.get('/', (req: express.Request, res: express.Response) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('AI Workstation Backend is running!');
 });
+
+// Add a public health check endpoint for the frontend to verify connectivity.
+app.get('/api/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', message: 'Backend is healthy' });
+});
+
 
 // Routes
 app.use('/api/auth', authRoutes);
