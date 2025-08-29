@@ -1,11 +1,12 @@
 
-// FIX: Use `express.Response` to avoid conflict with global Response type
+
+// FIX: Use aliased `Response` from 'express' to avoid conflict with global Response type
 // and resolve errors with properties like `json` and `status`.
-import * as express from 'express';
+import type { Response as ExpressResponse } from 'express';
 import { pool } from '../db';
 import { AuthRequest } from '../middleware/auth';
 
-export const getFiles = async (req: AuthRequest, res: express.Response) => {
+export const getFiles = async (req: AuthRequest, res: ExpressResponse) => {
   const userId = req.user?.id;
   try {
     const files = await pool.query('SELECT id, name, type, created_at FROM files WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
@@ -16,7 +17,7 @@ export const getFiles = async (req: AuthRequest, res: express.Response) => {
   }
 };
 
-export const getFileById = async (req: AuthRequest, res: express.Response) => {
+export const getFileById = async (req: AuthRequest, res: ExpressResponse) => {
     const userId = req.user?.id;
     const { id } = req.params;
     try {
@@ -31,7 +32,7 @@ export const getFileById = async (req: AuthRequest, res: express.Response) => {
     }
 };
 
-export const createFile = async (req: AuthRequest, res: express.Response) => {
+export const createFile = async (req: AuthRequest, res: ExpressResponse) => {
   const userId = req.user?.id;
   const { name, type, content } = req.body;
   
@@ -51,7 +52,7 @@ export const createFile = async (req: AuthRequest, res: express.Response) => {
   }
 };
 
-export const deleteFile = async (req: AuthRequest, res: express.Response) => {
+export const deleteFile = async (req: AuthRequest, res: ExpressResponse) => {
   const userId = req.user?.id;
   const { id } = req.params;
 

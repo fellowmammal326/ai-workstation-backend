@@ -1,7 +1,8 @@
 
-// FIX: Use `express.Response` to avoid conflict with global Response type
+
+// FIX: Use aliased `Response` from 'express' to avoid conflict with global Response type
 // and resolve errors with properties like `json` and `status`.
-import * as express from 'express';
+import type { Response as ExpressResponse } from 'express';
 import { GoogleGenAI } from "@google/genai";
 import { AuthRequest } from '../middleware/auth';
 
@@ -13,7 +14,7 @@ if (!process.env.API_KEY) {
 // FIX: Use API_KEY as per Google GenAI SDK guidelines.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const chatWithAI = async (req: AuthRequest, res: express.Response) => {
+export const chatWithAI = async (req: AuthRequest, res: ExpressResponse) => {
   const { history, message } = req.body;
 
   if (!message) {
@@ -37,7 +38,7 @@ export const chatWithAI = async (req: AuthRequest, res: express.Response) => {
   }
 };
 
-export const generateImage = async (req: AuthRequest, res: express.Response) => {
+export const generateImage = async (req: AuthRequest, res: ExpressResponse) => {
     const { prompt } = req.body;
 
     if (!prompt) {

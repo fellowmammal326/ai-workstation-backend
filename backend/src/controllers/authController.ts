@@ -1,14 +1,15 @@
 
-// FIX: Use `express.Request` and `express.Response` to avoid conflict with global types
+
+// FIX: Use aliased `Request` and `Response` from 'express' to avoid conflict with global types
 // and resolve errors with properties like `body`, `status`, and `json`.
-import * as express from 'express';
+import type { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../db';
 
 const SALT_ROUNDS = 10;
 
-export const register = async (req: express.Request, res: express.Response) => {
+export const register = async (req: ExpressRequest, res: ExpressResponse) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -32,7 +33,7 @@ export const register = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export const login = async (req: express.Request, res: express.Response) => {
+export const login = async (req: ExpressRequest, res: ExpressResponse) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

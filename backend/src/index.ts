@@ -1,13 +1,13 @@
 
+
 import dotenv from 'dotenv';
 // By calling dotenv.config() here, at the very top of the application's entry point,
 // we ensure that all environment variables are loaded from the .env file (for local development)
 // before any other code that might need them (like the AI controller or database config) is executed.
 dotenv.config();
 
-// FIX: Import process to resolve error on `process.exit`.
-import process from 'process';
-import express from 'express';
+// FIX: Aliased express types to avoid conflicts with global Request/Response types.
+import express, { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import fileRoutes from './routes/files';
@@ -20,7 +20,8 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-app.get('/', (req, res) => {
+// FIX: Explicitly use aliased express types to avoid type conflicts.
+app.get('/', (req: ExpressRequest, res: ExpressResponse) => {
   res.send('AI Workstation Backend is running!');
 });
 
@@ -56,5 +57,6 @@ pool.connect()
     console.error('*******************************************************************');
     console.error('***    The application cannot start without a database. Exiting.  ***');
     console.error('*******************************************************************\n');
-    process.exit(1); // Exit with a failure code
+    // FIX: Use `global.process.exit` to disambiguate from a potential conflicting global `Process` type.
+    global.process.exit(1); // Exit with a failure code
   });
