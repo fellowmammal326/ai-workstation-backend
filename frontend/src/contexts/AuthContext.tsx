@@ -12,12 +12,8 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// FIX: Explicitly defined props for AuthProvider, including `children`, to fix the type error in main.tsx.
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+// FIX: Explicitly type `children` prop inline to resolve component type error in main.tsx.
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

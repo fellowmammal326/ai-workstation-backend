@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 // before any other code that might need them (like the AI controller or database config) is executed.
 dotenv.config();
 
+// FIX: Import process to resolve error on `process.exit`.
+import process from 'process';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
@@ -35,5 +37,24 @@ pool.connect()
     });
   })
   .catch((err: Error) => {
-    console.error('Database connection error', err.stack);
+    console.error('\n*******************************************************************');
+    console.error('***           FATAL: DATABASE CONNECTION FAILED                   ***');
+    console.error('*******************************************************************');
+    if (!process.env.DATABASE_URL) {
+      console.error('REASON: The DATABASE_URL environment variable is not set.');
+      console.error('ACTION: Please set this variable with your PostgreSQL connection string.');
+      console.error('Example for local .env file: DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase"');
+    } else {
+      console.error('REASON: Could not connect to the database specified by DATABASE_URL.');
+      console.error('ACTION: Please verify the following:');
+      console.error('  1. Your PostgreSQL database server is running.');
+      console.error('  2. The connection string (host, port, user, password, db name) is correct.');
+      console.error('  3. The database is accessible from where you are running the app.');
+      console.error('  4. If using a cloud provider like Render, ensure you are using the "Internal Connection String".');
+    }
+    console.error('\nOriginal Error Message:', err.message);
+    console.error('*******************************************************************');
+    console.error('***    The application cannot start without a database. Exiting.  ***');
+    console.error('*******************************************************************\n');
+    process.exit(1); // Exit with a failure code
   });

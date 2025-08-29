@@ -1,14 +1,14 @@
 
-import { Request, Response, NextFunction } from 'express';
+import * as express from 'express';
 import jwt from 'jsonwebtoken';
 
-// FIX: Correctly extend express.Request using an interface to avoid type conflicts with
-// global types and ensure properties like `headers`, `body`, and `params` are available.
-export interface AuthRequest extends Request {
+// FIX: Use `express.Request` to avoid conflict with global Request type.
+// This resolves errors where properties like `headers` were not found.
+export interface AuthRequest extends express.Request {
   user?: { id: number };
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: AuthRequest, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
