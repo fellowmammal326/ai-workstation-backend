@@ -6,9 +6,8 @@ import dotenv from 'dotenv';
 // before any other code that might need them (like the AI controller or database config) is executed.
 dotenv.config();
 
-// FIX: Aliased express types to avoid conflicts with global Request/Response types.
-// Using original Request and Response types from express to resolve type conflicts.
-import express, { Request, Response } from 'express';
+// FIX: Switched to importing the 'express' namespace to avoid type conflicts with global Request/Response.
+import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import fileRoutes from './routes/files';
@@ -18,31 +17,27 @@ import { pool } from './db';
 const app = express();
 const port = process.env.PORT || 3001;
 
-// FIX: Add a more specific CORS configuration to allow requests from the frontend dev server.
-// This is a common fix for "load failed" network errors in development.
-const allowedOrigins = [
-    'http://localhost:5173', // Default Vite dev port
-    'http://localhost:3000', // Common create-react-app port
-    'http://localhost:8080', // Another common dev port
-];
-
+// FIX: Add a more robust CORS configuration to dynamically allow any localhost port for development.
+// This is a more flexible fix for "load failed" network errors.
 const corsOptions: cors.CorsOptions = {
     origin: (origin, callback) => {
-        // Allow requests with no origin (like Postman/curl) or from our allowed list.
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        // Allow requests with no origin (like Postman/curl) or from any localhost port for dev flexibility.
+        if (!origin || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
             callback(null, true);
         } else {
+            // In a real production environment, you would want to restrict this to your frontend's domain.
+            // For now, this setup is focused on a flexible development experience.
             callback(new Error('Not allowed by CORS'));
         }
     },
 };
+
 app.use(cors(corsOptions));
 // FIX: Using a larger limit for JSON bodies to accommodate file content.
 app.use(express.json({ limit: '10mb' }));
 
-// FIX: Explicitly use aliased express types to avoid type conflicts.
-// Using direct express types.
-app.get('/', (req: Request, res: Response) => {
+// FIX: Using namespaced express types to avoid type conflicts.
+app.get('/', (req: express.Request, res: express.Response) => {
   res.send('AI Workstation Backend is running!');
 });
 
@@ -78,6 +73,7 @@ pool.connect()
     console.error('*******************************************************************');
     console.error('***    The application cannot start without a database. Exiting.  ***');
     console.error('*******************************************************************\n');
-    // FIX: Use `process.exit` directly to resolve TS error on `global.process`.
+    // FIX: The error on 'process.exit' is likely due to a global type conflict.
+    // The express type fixes should resolve the environment's type resolution issues.
     process.exit(1); // Exit with a failure code
   });
