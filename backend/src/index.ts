@@ -7,7 +7,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // FIX: Aliased express types to avoid conflicts with global Request/Response types.
-import express, { Request as ExpressRequest, Response as ExpressResponse } from 'express';
+// Using original Request and Response types from express to resolve type conflicts.
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import fileRoutes from './routes/files';
@@ -17,11 +18,31 @@ import { pool } from './db';
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(cors());
+// FIX: Add a more specific CORS configuration to allow requests from the frontend dev server.
+// This is a common fix for "load failed" network errors in development.
+const allowedOrigins = [
+    'http://localhost:5173', // Default Vite dev port
+    'http://localhost:3000', // Common create-react-app port
+    'http://localhost:8080', // Another common dev port
+];
+
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like Postman/curl) or from our allowed list.
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+};
+app.use(cors(corsOptions));
+// FIX: Using a larger limit for JSON bodies to accommodate file content.
 app.use(express.json({ limit: '10mb' }));
 
 // FIX: Explicitly use aliased express types to avoid type conflicts.
-app.get('/', (req: ExpressRequest, res: ExpressResponse) => {
+// Using direct express types.
+app.get('/', (req: Request, res: Response) => {
   res.send('AI Workstation Backend is running!');
 });
 
@@ -57,6 +78,6 @@ pool.connect()
     console.error('*******************************************************************');
     console.error('***    The application cannot start without a database. Exiting.  ***');
     console.error('*******************************************************************\n');
-    // FIX: Use `global.process.exit` to disambiguate from a potential conflicting global `Process` type.
-    global.process.exit(1); // Exit with a failure code
+    // FIX: Use `process.exit` directly to resolve TS error on `global.process`.
+    process.exit(1); // Exit with a failure code
   });
